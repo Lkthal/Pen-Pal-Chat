@@ -45,8 +45,10 @@ class RoomList extends Component {
         </form>
    			<ul>
    			{
-   				this.state.rooms.map( (room) =>
-   					<li >{room.name}</li> )
+   				this.state.rooms.map( (room, index) =>
+   					<li className="room" key={index}>
+              {room.name}
+            </li> )
    			}
    			</ul>
       </div>
