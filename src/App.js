@@ -16,10 +16,23 @@ var config = {
   firebase.initializeApp(config);
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { activeRoom: '' };
+    this.activateRoom = this.activateRoom.bind(this);
+  }
+
+  activateRoom(room) {
+    this.setState({ activeRoom: room });
+    console.log(room);
+  }
+
   render() {
     return (
       <div className="App">
-            <RoomList firebase={firebase} />
+            < RoomList firebase={firebase} activeRoom={this.state.activeRoom} activateRoom={this.activateRoom.bind(this)}/>
+            < MessageList firebase={firebase} activeRoom={this.state.activeRoom} />
+
       </div>
     );
   }

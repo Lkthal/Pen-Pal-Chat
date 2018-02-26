@@ -1,37 +1,64 @@
 import React, { Component } from 'react';
 
-class RoomList extends Component {
-   constructor(props) {
-     super(props);
+class MessageList extends Component {
 
-     this.state = {
-
-      message: [],
-      username: "",
-      content: "",
-      sentAt: "",
-      roomId: ""
-
+  constructor(props) {
+    super(props);
+    this.state = {
+          messages: [],
+          currentRoomMessages: [],
+          newMessageContent: ""
     };
     this.messagesRef = this.props.firebase.database().ref('messages');
-
+    this.createMessage = this.createMessage.bind(this);
+    this.filterAndDisplayMessages = this.filterAndDisplayMessages.bind(this);
   }
 
   componentDidMount() {
-     this.roomsRef.on('child_added', snapshot => {
-       const room = snapshot.val();
-       room.key = snapshot.key;
-       this.setState({ rooms: this.state.rooms.concat( room ) });
-     });
+    this.messagesRef.on('child_added', snapshot => {
+      const message = snapshot.val();
+      message.key = snapshot.key;
+      this.setState({ messages: this.state.messages.concat( message ) });
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.activeRoom !== this.props.activeRoom) {
+      this.filterAndDisplayMessages( nextProps.activeRoom );
     }
+  }
+
+  createMessage(newMessageContent) {
+   if (!this.props.activeRoom || !this.props.user) {return};
+   this.messagesRef.push({
+     content: this.state.newMessageContent,
+     roomId: this.props.activeRoom.key,
+     sentAt: this.props.firebase.database.ServerValue.TIMESTAMP,
+     username: this.props.user.displayName
+   });
+   this.setState({ newMessageContent: '' });
+ }
 
 
-    render() {
-     return()
-   }
+  filterAndDisplayMessages(activeRoom) {
+    this.setState({ currentRoomMessages: this.state.messages.filter(message => message.roomId === activeRoom.key) })
+  }
 
-
-
-};
+  render() {
+    return (
+      <div className="messages">
+        <h2>Messages</h2>
+        <div className="messages-list">
+          {this.state.currentRoomMessages.map(message =>
+            <div key={message.key}>
+              <h5>{message.username} at {message.sentAt}:</h5>
+              <h6>{message.content}</h6>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+}
 
 export default MessageList;

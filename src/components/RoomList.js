@@ -29,7 +29,7 @@ class RoomList extends Component {
       event.preventDefault();
       if(!this.state.newRoomName) { return; }
       const newRoom = { name: this.state.newRoomName};
-      this.roomsRef.push({ newRoom });
+      this.roomsRef.push( newRoom );
       this.setState({ rooms: [...this.state.rooms, newRoom], newRoomName: "" });
 
     }
@@ -44,9 +44,11 @@ class RoomList extends Component {
           <input type="submit" value="Add Room" />
         </form>
    			<ul>
-   			{
-   				this.state.rooms.map( (room) =>
-   					<li >{room.name}</li> )
+        {
+   				this.state.rooms.map( (room, index) =>
+   					<li className="room" key={index}>
+              {room.name}
+            </li> )
    			}
    			</ul>
       </div>
