@@ -29,7 +29,7 @@ class RoomList extends Component {
       event.preventDefault();
       if(!this.state.newRoomName) { return; }
       const newRoom = { name: this.state.newRoomName};
-      this.roomsRef.push({ newRoom });
+      this.roomsRef.push( newRoom );
       this.setState({ rooms: [...this.state.rooms, newRoom], newRoomName: "" });
 
     }
