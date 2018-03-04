@@ -28,6 +28,10 @@ class MessageList extends Component {
     }
   }
 
+  handleChange(e) {
+      this.setState({ newMessageContent: e.target.value });
+    }
+
   createMessage(newMessageContent) {
    if (!this.props.activeRoom || !this.props.user) {return};
    this.messagesRef.push({
@@ -44,21 +48,34 @@ class MessageList extends Component {
     this.setState({ currentRoomMessages: this.state.messages.filter(message => message.roomId === activeRoom.key) })
   }
 
-  render() {
-    return (
-      <div className="messages">
-        <h2>Messages</h2>
-        <div className="messages-list">
-          {this.state.currentRoomMessages.map(message =>
-            <div key={message.key}>
-              <h5>{message.username} at {message.sentAt}:</h5>
-              <h6>{message.content}</h6>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+  render(){
+        return(
+            <section className="message-list">
+                <ul className="messages" >
+                    {
+                        this.state.currentRoomMessages.map( (message, index) => {
+                        if(message.roomId === this.props.activeRoomId){
+                            return(
+                                <li className="message" key={index}>
+                                    <div className="message-info">
+                                        <div className="username">{message.userName}</div>
+                                        <div>
+                                        <span className="message-content">{message.content}</span>
+                                        <span className="time-sent">{message.sentAt}</span>
+                                        </div>
+                                    </div>
+
+                                </li>
+                                )
+                            }
+                        })
+                    }
+                </ul>
+                <input type="text" value={this.state.newMessageContent} onChange={(e) => this.handleChange(e)} className="message-input"  />
+
+            </section>
+        );
+    }
 }
 
 export default MessageList;
