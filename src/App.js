@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
@@ -16,24 +15,35 @@ var config = {
   firebase.initializeApp(config);
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { activeRoom: '' };
-    this.activateRoom = this.activateRoom.bind(this);
-  }
+    constructor(props) {
+      super(props);
+      this.state = {
+        activeRoomId: null,
+        user: null
+      }
+    }
 
-  activateRoom(room) {
-    this.setState({ activeRoom: room });
-    console.log(room);
-  }
+    setActiveRoom(e) {
+      const roomId = e.target.id;
+      this.setState({ activeRoomId: roomId });
+    }
 
   render() {
     return (
-      <div className="App">
-            < RoomList firebase={firebase} activeRoom={this.state.activeRoom} activateRoom={this.activateRoom.bind(this)}/>
-            < MessageList firebase={firebase} activeRoom={this.state.activeRoom} />
-
-      </div>
+      <div className="App" id="container">
+              <RoomList firebase={firebase} activeRoom={this.state.activeRoomId} setActiveRoom={(e) => this.setActiveRoom(e)} />
+              <aside id="sidebar">Users</aside>
+                <main>
+                  <section className="message-list">
+                  {
+                    this.state.activeRoomId
+                    ? <MessageList firebase={firebase} activeRoomId={this.state.activeRoomId} />
+                    : <h3>Select a room to start!</h3>
+                  }
+                    </section>
+                    <section id="new-message">New message</section>
+                </main>
+          </div>
     );
   }
 }
