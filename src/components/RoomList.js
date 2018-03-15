@@ -7,7 +7,7 @@ class RoomList extends Component{
         super(props);
         this.state = {
             newRoomName: "",
-            rooms: [],
+            rooms: []
         };
 
         this.roomsRef = this.props.firebase.database().ref("rooms");
@@ -15,9 +15,9 @@ class RoomList extends Component{
 
     componentDidMount(){
         this.roomsRef.on("child_added", snapshot =>{
-            const room = snapshot.val();
-            room.key = snapshot.key;
-            this.setState({ rooms: this.state.rooms.concat( room ) });
+            const roomID = snapshot.val();
+            roomID.key = snapshot.key;
+            this.setState({ rooms: this.state.rooms.concat( roomID ) });
         });
     }
 
@@ -35,28 +35,20 @@ class RoomList extends Component{
     render() {
         return(
             <section className="sidebar">
-                <h1>Bloc Chat</h1>
                 <form onSubmit={(e) => this.createRoom(e)}>
                     <input type="text" placeholder="New Room" value={this.state.newRoomName} onChange={(e) => this.handleChange(e)} />
                     <input type="submit" value="Add" />
                 </form>
-                <ul className="room-list">
-                    {
-                        this.state.rooms.map( (room, index) =>
-                            <li className=
-                                {
-                                    this.props.activeRoom === room.key
-                                    ? "active-room"
-                                    : "room"
-                                }
-                                key={index}
-                                id={room.key}
-                                onClick={ this.props.setActiveRoom }>
-                                {room.name}
-                            </li>
-                        )
-                    }
-                </ul>
+                <ul>
+                   {
+                     this.state.rooms.map( (roomID, index) =>
+                       <li className="roomName" onClick={() => this.props.changeRoom(roomID.name)} key={index}>
+                         {roomID.name}
+                       </li>
+                     )
+                   }
+                 </ul>
+
             </section>
         );
     }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import MessageBox from './MessageBox';
 
 class MessageList extends Component {
 
@@ -6,8 +7,9 @@ class MessageList extends Component {
     super(props);
     this.state = {
           messages: [],
+          newContent:" "
 
-    };
+    }
      this.messagesRef = this.props.firebase.database().ref("messages");
   }
 
@@ -15,36 +17,58 @@ class MessageList extends Component {
     this.messagesRef.on('child_added', snapshot => {
       const message = snapshot.val();
       message.key = snapshot.key;
-      this.setState({ messages: this.state.messages.concat( message ) })
+      this.setState({ messages: this.state.messages.concat( message ) });
     });
   }
 
-  render(){
-       return(
-           <section className="message-list">
-               <ul className="messages" >
-                   {
-                       this.state.messages.map( (message, index) => {
-                       if(message.roomId === this.props.activeRoomId){
-                           return(
-                               <li className="message" key={index}>
-                                   <div className="message-info">
-                                       <div className="username">{message.userName}</div>
-                                       <div>
-                                       <span className="message-content">{message.content}</span>
-                                       <span className="time-sent">{message.sentAt}</span>
-                                       </div>
-                                   </div>
+    handleMessageChange(e){
+      this.setState({ newContent: e.target.value });
+      this.setState({ })
+    }
 
-                               </li>
-                               )
-                           }
-                       })
-                   }
-               </ul>
-           </section>
-       );
+    createMessage(e) {
+      e.preventDefault();
+      const newContent = this.state.newContent;
+      const currentRoom = this.props.currentRoom;
+      const sentAt = this.props.firebase.database.ServerValue.TIMESTAMP;
+      this.messagesRef.push({ username: this.props.user, content: newContent, sentAt: sentAt,roomID: currentRoom });
+    }
+
+    render() {
+     return (
+
+       <div>
+         <h2 onClick={this.filterMessagesByRoom}>Current Room: {this.props.currentRoom}</h2>
+
+         <ul>
+           {
+             this.state.messages.map( (message, index) =>
+               <MessageBox
+                 message={message}
+                 key={index}
+                 currentRoom={this.props.currentRoom}
+               />
+             )
+           }
+         </ul>
+
+         <form
+           className="add-new-message"
+           onSubmit={(e) => this.props.roomAssigned ? this.createMessage(e) : null}>
+             <label>
+               {this.props.currentUser}:
+               <input
+                 type="text"
+                 value={this.state.newContent}
+                 onChange={ (e) => this.handleMessageChange(e) }
+               />
+             </label>
+             <input type="submit" value="Submit" />
+         </form>
+       </div>
+     );
    }
-}
+ }
+
 
 export default MessageList;

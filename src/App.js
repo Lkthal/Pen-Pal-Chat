@@ -18,34 +18,53 @@ class App extends Component {
     constructor(props) {
       super(props);
       this.state = {
-        activeRoomId: null,
-        user: null
+        currentRoom: '',
+        user: "Guest",
+        roomAssigned: false
       }
     }
 
-    setActiveRoom(e) {
-      const roomId = e.target.id;
-      this.setState({ activeRoomId: roomId });
+    changeRoom(roomName) {
+      this.setState(
+        { currentRoom: roomName },
+        function () {
+          console.log(this.state.currentRoom)
+        }
+      );
+      this.setState({ roomAssigned: true});
     }
 
-  render() {
-    return (
-      <div className="App" id="container">
-              <RoomList firebase={firebase} activeRoom={this.state.activeRoomId} setActiveRoom={(e) => this.setActiveRoom(e)} />
-              <aside id="sidebar">Users</aside>
-                <main>
-                  <section className="message-list">
-                  {
-                    this.state.activeRoomId
-                    ? <MessageList firebase={firebase} activeRoomId={this.state.activeRoomId} />
-                    : <h3>Select a room to start!</h3>
-                  }
-                    </section>
-                    <section id="new-message">New message</section>
-                </main>
-          </div>
-    );
+
+    render() {
+      return (
+        <div className="App">
+
+          <nav>
+          </nav>
+
+          <header>
+            <h1>Bloc Chat</h1>
+          </header>
+
+          <main>
+          </main>
+
+          <RoomList
+            firebase={firebase}
+            changeRoom={this.changeRoom.bind(this)}
+          />
+
+          <MessageList
+            firebase={firebase}
+            currentRoom={this.state.currentRoom}
+            user={this.state.user}
+            roomAssigned={this.state.roomAssigned}
+          />
+
+
+        </div>
+      );
+    }
   }
-}
 
 export default App;
