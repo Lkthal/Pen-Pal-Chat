@@ -3,6 +3,7 @@ import './App.css';
 import RoomList from './components/RoomList';
 import MessageList from './components/MessageList';
 import * as firebase from 'firebase';
+import User from './components/User';
 
 var config = {
     apiKey: "AIzaSyC8O9s_aKwzfU8rogFDGLm1hJJVQS6eJUM",
@@ -34,6 +35,9 @@ class App extends Component {
       this.setState({ roomAssigned: true});
     }
 
+    setUser(user) {
+      this.setState({ user: user })
+    }
 
     render() {
       return (
@@ -60,8 +64,11 @@ class App extends Component {
             user={this.state.user}
             roomAssigned={this.state.roomAssigned}
           />
-
-
+          <User
+            firebase={firebase}
+            setUser={(user) => this.setUser(user)} user={this.state.user}
+            />
+            
         </div>
       );
     }
