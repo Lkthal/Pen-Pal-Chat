@@ -31,7 +31,7 @@ class MessageList extends Component {
       const newContent = this.state.newContent;
       const currentRoom = this.props.currentRoom;
       const sentAt = this.props.firebase.database.ServerValue.TIMESTAMP;
-      this.messagesRef.push({ username: this.props.user, content: newContent, sentAt: sentAt,roomID: currentRoom });
+      this.messagesRef.push({ username: this.props.user.email, content: newContent, sentAt: sentAt,roomID: currentRoom });
     }
 
     render() {
