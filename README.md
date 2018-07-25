@@ -1,3 +1,7 @@
+## Pen Pal Chat
+
+This a chatroom application that allows user to communicate with people all over the world by allowing them to choose what chat room they want to participate in. The backbone of this application is Firebase. We will use Firebase to manage the database, file storage, Authentication via email, Google, Facebook, Twitter, GitHub, or even phone, and host the application. 
+
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
 Below you will find some information on how to perform common tasks.<br>
